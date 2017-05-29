@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "course-WebTechHomework", "course-WebTechHomework\course-WebTechHomework.csproj", "{363157DB-8BEF-48C9-BC12-5D6819F4BC88}"
-EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3C726625-BDC8-4DC0-88E6-4407F6A587D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileUpload", "FileUpload\FileUpload.csproj", "{6AE97496-461C-4F3C-A98A-A44036EA03B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{363157DB-8BEF-48C9-BC12-5D6819F4BC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{363157DB-8BEF-48C9-BC12-5D6819F4BC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{363157DB-8BEF-48C9-BC12-5D6819F4BC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{363157DB-8BEF-48C9-BC12-5D6819F4BC88}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C726625-BDC8-4DC0-88E6-4407F6A587D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C726625-BDC8-4DC0-88E6-4407F6A587D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C726625-BDC8-4DC0-88E6-4407F6A587D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C726625-BDC8-4DC0-88E6-4407F6A587D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AE97496-461C-4F3C-A98A-A44036EA03B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE97496-461C-4F3C-A98A-A44036EA03B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE97496-461C-4F3C-A98A-A44036EA03B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE97496-461C-4F3C-A98A-A44036EA03B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
