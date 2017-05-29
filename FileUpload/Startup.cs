@@ -49,17 +49,18 @@ namespace FileUpload
             }
 
             var options = new RewriteOptions()
-               .AddRewrite(@"^(?!(assets|scripts|styles)).*", "/Home/Index", skipRemainingRules: true);
+               .AddRewrite(@"^(?!(assets|scripts|styles|api)).*", "/", skipRemainingRules: true);
 
             app.UseRewriter(options);
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "api/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
