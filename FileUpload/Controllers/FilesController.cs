@@ -57,6 +57,7 @@ namespace FileUpload.Controllers
             return Ok(emitedList);
         }
 
+        // POST: api/Files
         [HttpPost]
         public async Task<IActionResult> Test([FromForm]IFormFile uploadFile)
         {
@@ -70,6 +71,7 @@ namespace FileUpload.Controllers
                 using (var stream = new System.IO.MemoryStream())
                 {
                     await uploadFile.CopyToAsync(stream);
+                    stream.Position = 0;
                     var md5Arr = MD5.Create().ComputeHash(stream);
 
                     file.MD5 = Convert.ToBase64String(md5Arr);
@@ -106,6 +108,7 @@ namespace FileUpload.Controllers
             return Ok(new FileReturnInfo(file));
         }
 
+        // GET: api/Files/5/Download
         [HttpGet("{id}/Download")]
         public async Task<IActionResult> Download([FromRoute] int id)
         {
