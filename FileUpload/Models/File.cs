@@ -11,6 +11,8 @@ namespace FileUpload.Models
         public string FileName { get; set; }
         public string Type { get; set; }
         public DateTime UploadDate { get; set; }
-        public string Path { get; set; }
+        public string MD5 { get; set; }
+
+        public byte[] FileContent { get; set; }
     }
 }

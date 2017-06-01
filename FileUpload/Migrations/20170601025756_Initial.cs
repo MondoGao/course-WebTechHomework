@@ -15,8 +15,9 @@ namespace FileUpload.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FileContent = table.Column<byte[]>(nullable: true),
                     FileName = table.Column<string>(nullable: true),
-                    Path = table.Column<string>(nullable: true),
+                    MD5 = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     UploadDate = table.Column<DateTime>(nullable: false)
                 },

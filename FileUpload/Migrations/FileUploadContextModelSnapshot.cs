@@ -21,9 +21,11 @@ namespace FileUpload.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte[]>("FileContent");
+
                     b.Property<string>("FileName");
 
-                    b.Property<string>("Path");
+                    b.Property<string>("MD5");
 
                     b.Property<string>("Type");
 

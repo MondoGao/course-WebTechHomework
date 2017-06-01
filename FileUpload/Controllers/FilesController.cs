@@ -38,31 +38,22 @@ namespace FileUpload.Controllers
         public async Task<IActionResult> Test([FromForm]IFormFile file)
         {
             var nowStamp = DateTime.Now;
-            var fileName = file.FileName;
             var rootPath = _env.ContentRootPath;
-            string md5 = "";
-            string targetFileName;
 
-            string targetFilePath;
+            var fileName = file.FileName;
+
+            var fileIns = new File { FileName = fileName, Type = file.ContentType, UploadDate = nowStamp };
 
             if (file.Length > 0)
             {
                 using (var stream = new System.IO.MemoryStream())
                 {
                     await file.CopyToAsync(stream);
-                    stream.ToArray();
                     var md5Arr = MD5.Create().ComputeHash(stream);
-                    md5 = Convert.ToBase64String(md5Arr);
 
-                    targetFileName = md5;
-                    targetFilePath = System.IO.Path.Combine(rootPath, "Files", $"{md5}");
+                    fileIns.MD5 = Convert.ToBase64String(md5Arr);
+                    fileIns.FileContent = stream.ToArray();
                 }
-                using (var stream = new System.IO.FileStream(targetFilePath, System.IO.FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                var fileIns = new File { FileName = fileName, Type = file.ContentType, Path = $"Files/{targetFileName}", UploadDate = nowStamp };
 
                 await _context.File.AddAsync(fileIns);
                 _context.SaveChanges();
