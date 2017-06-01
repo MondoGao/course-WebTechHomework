@@ -21,6 +21,24 @@ namespace FileUpload.Controllers
         private readonly FileUploadContext _context;
         private readonly IHostingEnvironment _env;
 
+        private class FileReturnInfo
+        {
+            public int id;
+            public string fileName;
+            public DateTime uploadDate;
+            public string type;
+            public string md5;
+
+            public FileReturnInfo(File file)
+            {
+                id = file.ID;
+                fileName = file.FileName;
+                uploadDate = file.UploadDate;
+                type = file.Type;
+                md5 = file.MD5;
+            }
+        }
+
         public FilesController(FileUploadContext context, IHostingEnvironment env)
         {
             _context = context;
@@ -29,36 +47,39 @@ namespace FileUpload.Controllers
 
         // GET: api/Files
         [HttpGet]
-        public IEnumerable<File> GetFile()
+        public IActionResult GetFile()
         {
-            return _context.File;
+            List<FileReturnInfo> emitedList = new List<FileReturnInfo> { };
+            foreach (var file in _context.File.ToList())
+            {
+                emitedList.Add(new FileReturnInfo(file));
+            }
+            return Ok(emitedList);
         }
 
-        [HttpPost("Test")]
-        public async Task<IActionResult> Test([FromForm]IFormFile file)
+        [HttpPost]
+        public async Task<IActionResult> Test([FromForm]IFormFile uploadFile)
         {
             var nowStamp = DateTime.Now;
             var rootPath = _env.ContentRootPath;
 
-            var fileName = file.FileName;
+            var file = new File { FileName = uploadFile.FileName, Type = uploadFile.ContentType, UploadDate = nowStamp };
 
-            var fileIns = new File { FileName = fileName, Type = file.ContentType, UploadDate = nowStamp };
-
-            if (file.Length > 0)
+            if (uploadFile.Length > 0)
             {
                 using (var stream = new System.IO.MemoryStream())
                 {
-                    await file.CopyToAsync(stream);
+                    await uploadFile.CopyToAsync(stream);
                     var md5Arr = MD5.Create().ComputeHash(stream);
 
-                    fileIns.MD5 = Convert.ToBase64String(md5Arr);
-                    fileIns.FileContent = stream.ToArray();
+                    file.MD5 = Convert.ToBase64String(md5Arr);
+                    file.FileContent = stream.ToArray();
                 }
 
-                await _context.File.AddAsync(fileIns);
+                await _context.File.AddAsync(file);
                 _context.SaveChanges();
 
-                return Ok(fileIns);
+                return Ok(new FileReturnInfo(file));
             }
             else
             {
@@ -82,7 +103,20 @@ namespace FileUpload.Controllers
                 return NotFound();
             }
 
-            return Ok(file);
+            return Ok(new FileReturnInfo(file));
+        }
+
+        [HttpGet("{id}/Download")]
+        public async Task<IActionResult> Download([FromRoute] int id)
+        {
+            var file = await _context.File.SingleOrDefaultAsync(m => m.ID == id);
+
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            return File(file.FileContent, file.Type, file.FileName);
         }
 
         // PUT: api/Files/5
@@ -118,21 +152,6 @@ namespace FileUpload.Controllers
             }
 
             return NoContent();
-        }
-
-        // POST: api/Files
-        [HttpPost]
-        public async Task<IActionResult> PostFile([FromBody] File file)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.File.Add(file);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFile", new { id = file.ID }, file);
         }
 
         // DELETE: api/Files/5
