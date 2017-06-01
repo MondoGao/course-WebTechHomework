@@ -70,6 +70,11 @@ namespace FileUpload.Controllers
             var nowStamp = DateTime.Now;
             var rootPath = _env.ContentRootPath;
 
+            if (uploadFile == null)
+            {
+                return NoContent();
+            }
+
             var file = new File { FileName = uploadFile.FileName, Type = uploadFile.ContentType, UploadDate = nowStamp };
 
             if (uploadFile.Length > 0)
@@ -79,13 +84,47 @@ namespace FileUpload.Controllers
                     await uploadFile.CopyToAsync(stream);
                     stream.Position = 0;
                     var md5Arr = MD5.Create().ComputeHash(stream);
-
-                    file.MD5 = Convert.ToBase64String(md5Arr);
+                  
+                    StringBuilder sBuilder = new StringBuilder();
+                    
+                    for (int i = 0; i < md5Arr.Length; i++)
+                    {
+                        sBuilder.Append(md5Arr[i].ToString("x2"));
+                    }
+                    
+                    file.MD5 = sBuilder.ToString();
                     file.FileContent = stream.ToArray();
 
-                    if (file.Type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                    var extension = "";
+
+                    switch (file.Type)
                     {
-                        var resultImage = CovertFile.Covert(rootPath, file.MD5, ".docx", stream);
+                        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                            extension = ".docx";
+                            break;
+                        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                            extension = ".xlsx";
+                            break;
+                        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                            extension = ".pptx";
+                            break;
+                        case "application/msword":
+                            extension = ".doc";
+                            break;
+                        case "application/vnd.ms-excel":
+                            extension = ".xls";
+                            break;
+                        case "application/vnd.ms-powerpoint":
+                            extension = ".ppt";
+                            break;
+                        case "application/pdf":
+                            extension = ".pdf";
+                            break;
+                    }
+
+                    if (extension != "")
+                    {
+                        var resultImage = CovertFile.Covert(rootPath, file.MD5, extension, stream);
 
                         using (var previewStream = new System.IO.FileStream(resultImage, System.IO.FileMode.Open))
                         {
