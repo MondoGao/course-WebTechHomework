@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Cryptography;
 using System.Text;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using System.Xml.Linq;
+
 
 namespace FileUpload.Controllers
 {
@@ -59,7 +63,7 @@ namespace FileUpload.Controllers
 
         // POST: api/Files
         [HttpPost]
-        public async Task<IActionResult> Test([FromForm]IFormFile uploadFile)
+        public async Task<IActionResult> Upload([FromForm]IFormFile uploadFile)
         {
             var nowStamp = DateTime.Now;
             var rootPath = _env.ContentRootPath;
@@ -76,6 +80,11 @@ namespace FileUpload.Controllers
 
                     file.MD5 = Convert.ToBase64String(md5Arr);
                     file.FileContent = stream.ToArray();
+
+                    if (file.Type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                    {
+                        var resultImage = CovertFile.Covert(rootPath, file.MD5, ".docx", stream);
+                    }
                 }
 
                 await _context.File.AddAsync(file);
