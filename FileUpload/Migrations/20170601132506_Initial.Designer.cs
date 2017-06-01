@@ -8,7 +8,7 @@ using FileUpload.Models;
 namespace FileUpload.Migrations
 {
     [DbContext(typeof(FileUploadContext))]
-    [Migration("20170601025756_Initial")]
+    [Migration("20170601132506_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,8 @@ namespace FileUpload.Migrations
                     b.Property<string>("FileName");
 
                     b.Property<string>("MD5");
+
+                    b.Property<byte[]>("PreviewImage");
 
                     b.Property<string>("Type");
 

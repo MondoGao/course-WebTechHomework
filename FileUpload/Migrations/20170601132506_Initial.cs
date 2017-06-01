@@ -18,6 +18,7 @@ namespace FileUpload.Migrations
                     FileContent = table.Column<byte[]>(nullable: true),
                     FileName = table.Column<string>(nullable: true),
                     MD5 = table.Column<string>(nullable: true),
+                    PreviewImage = table.Column<byte[]>(nullable: true),
                     Type = table.Column<string>(nullable: true),
                     UploadDate = table.Column<DateTime>(nullable: false)
                 },

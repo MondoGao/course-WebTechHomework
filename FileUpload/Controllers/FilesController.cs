@@ -32,6 +32,7 @@ namespace FileUpload.Controllers
             public DateTime uploadDate;
             public string type;
             public string md5;
+            public bool hasPreviewImage;
 
             public FileReturnInfo(File file)
             {
@@ -40,6 +41,7 @@ namespace FileUpload.Controllers
                 uploadDate = file.UploadDate;
                 type = file.Type;
                 md5 = file.MD5;
+                hasPreviewImage = file.PreviewImage != null;
             }
         }
 
@@ -84,6 +86,14 @@ namespace FileUpload.Controllers
                     if (file.Type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
                     {
                         var resultImage = CovertFile.Covert(rootPath, file.MD5, ".docx", stream);
+
+                        using (var previewStream = new System.IO.FileStream(resultImage, System.IO.FileMode.Open))
+                        {
+                            await stream.FlushAsync();
+                            stream.Position = 0;
+                            await previewStream.CopyToAsync(stream);
+                            file.PreviewImage = stream.ToArray();
+                        }
                     }
                 }
 
@@ -129,6 +139,20 @@ namespace FileUpload.Controllers
             }
 
             return File(file.FileContent, file.Type, file.FileName);
+        }
+
+        // GET: api/Files/5/Preview
+        [HttpGet("{id}/Preview")]
+        public async Task<IActionResult> Preview([FromRoute] int id)
+        {
+            var file = await _context.File.SingleOrDefaultAsync(m => m.ID == id);
+
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            return File(file.PreviewImage, "image/png", $"{file.MD5}.png");
         }
 
         // PUT: api/Files/5

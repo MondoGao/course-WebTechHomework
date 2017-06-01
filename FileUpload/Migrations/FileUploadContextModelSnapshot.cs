@@ -27,6 +27,8 @@ namespace FileUpload.Migrations
 
                     b.Property<string>("MD5");
 
+                    b.Property<byte[]>("PreviewImage");
+
                     b.Property<string>("Type");
 
                     b.Property<DateTime>("UploadDate");

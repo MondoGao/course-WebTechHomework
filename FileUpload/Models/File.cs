@@ -13,6 +13,8 @@ namespace FileUpload.Models
         public DateTime UploadDate { get; set; }
         public string MD5 { get; set; }
 
+        public byte[] PreviewImage { get; set; }
+
         public byte[] FileContent { get; set; }
     }
 }
