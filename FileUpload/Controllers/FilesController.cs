@@ -1,46 +1,173 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.EntityFrameworkCore;
+using FileUpload.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FileUpload.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
+    [Route("api/Files")]
     public class FilesController : Controller
     {
-        // GET: api/values
+        private readonly FileUploadContext _context;
+        private readonly IHostingEnvironment _env;
+
+        public FilesController(FileUploadContext context, IHostingEnvironment env)
+        {
+            _context = context;
+            _env = env;
+        }
+
+        // GET: api/Files
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<File> GetFile()
         {
-            return new string[] { "value1", "value2" };
+            return _context.File;
         }
 
-        // GET api/values/5
+        [HttpPost("Test")]
+        public async Task<IActionResult> Test([FromForm]IFormFile file)
+        {
+            var nowStamp = DateTime.Now;
+            var fileName = file.FileName;
+            var rootPath = _env.ContentRootPath;
+            string md5 = "";
+            string targetFileName;
+
+            string targetFilePath;
+
+            if (file.Length > 0)
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    await file.CopyToAsync(stream);
+                    stream.ToArray();
+                    var md5Arr = MD5.Create().ComputeHash(stream);
+                    md5 = Convert.ToBase64String(md5Arr);
+
+                    targetFileName = md5;
+                    targetFilePath = System.IO.Path.Combine(rootPath, "Files", $"{md5}");
+                }
+                using (var stream = new System.IO.FileStream(targetFilePath, System.IO.FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var fileIns = new File { FileName = fileName, Type = file.ContentType, Path = $"Files/{targetFileName}", UploadDate = nowStamp };
+
+                await _context.File.AddAsync(fileIns);
+                _context.SaveChanges();
+
+                return Ok(fileIns);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+
+        // GET: api/Files/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetFile([FromRoute] int id)
         {
-            return "value";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var file = await _context.File.SingleOrDefaultAsync(m => m.ID == id);
+
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(file);
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
+        // PUT: api/Files/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> PutFile([FromRoute] int id, [FromBody] File file)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != file.ID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(file).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FileExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // POST: api/Files
+        [HttpPost]
+        public async Task<IActionResult> PostFile([FromBody] File file)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.File.Add(file);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetFile", new { id = file.ID }, file);
+        }
+
+        // DELETE: api/Files/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFile([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var file = await _context.File.SingleOrDefaultAsync(m => m.ID == id);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            _context.File.Remove(file);
+            await _context.SaveChangesAsync();
+
+            return Ok(file);
+        }
+
+        private bool FileExists(int id)
+        {
+            return _context.File.Any(e => e.ID == id);
         }
     }
 }

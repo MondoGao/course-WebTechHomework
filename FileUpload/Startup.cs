@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
+using FileUpload.Models;
 
 namespace FileUpload
 {
@@ -30,6 +32,9 @@ namespace FileUpload
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddDbContext<FileUploadContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("FileUploadContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,10 +47,6 @@ namespace FileUpload
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
             }
 
             var options = new RewriteOptions()
