@@ -1,4 +1,4 @@
-const {resolve} = require('path')
+const { resolve } = require('path')
 const Webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -9,19 +9,12 @@ module.exports = {
     vendor: [
       'react',
       'react-dom',
-      'react-redux',
       'react-router-dom',
-      'redux',
-      'redux-storage',
-      'redux-storage-decorator-debounce',
-      'redux-storage-decorator-filter',
-      'redux-storage-engine-localstorage',
-      'redux-thunk'
     ]
   },
   output: {
     filename: 'scripts/[name].[hash].js',
-    path: resolve(__dirname, '../dist'),
+    path: resolve(__dirname, '../../FileUpload/wwwroot'),
     publicPath: '/'
   },
   module: {
