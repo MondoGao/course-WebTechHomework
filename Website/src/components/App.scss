@@ -9,6 +9,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+a, a:link, a:focus, a:visited {
+  text-decoration: none;
+}
+
 .app {
   height: 100vh;
 }
@@ -34,15 +38,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .menu {
   :global(.ant-menu-item) {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
 .content {
-  div {
+  > * {
     margin: 16px;
     padding: 16px;
     background: white;
+    border-radius: 5px;
   }
 }
 

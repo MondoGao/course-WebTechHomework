@@ -2,13 +2,18 @@ import React from 'react';
 import { Layout, Menu, Icon} from 'antd'
 const { Header, Content, Footer, Sider } = Layout
 const { Item } = Menu
+import {
+  Route,
+  Redirect,
+  Link,
+  Switch
+} from 'react-router-dom';
 
 import styles from './App.scss';
 
-import {
-  Route,
-  Redirect
-} from 'react-router-dom';
+import PageUpload from 'components/PageUpload'
+import PageDownload from 'components/PageDownload'
+import PageAbout from 'components/PageAbout'
 
 class App extends React.Component {
   state = {
@@ -43,30 +48,39 @@ class App extends React.Component {
             defaultSelectedKeys={['upload']}
             className={styles.menu}>
             <Item key="upload">
-              <span>
+              <Link to="/upload">
                 <Icon type="upload" />
                 {this.state.collapsed ? null :<span className="nav-text">上传文件</span>}
-              </span>
+              </Link>
             </Item>
             <Item key="download">
-              <span>
+              <Link to="/download">
                 <Icon type="download" />
                 {this.state.collapsed ? null :<span className="nav-text">下载文件</span>}
-              </span>
+              </Link>
             </Item>
             <Item>
-              <span>
+              <Link to="/">
                 <Icon type="smile" />
                 {this.state.collapsed ? null :<span className="nav-text">关于我们</span>}
-              </span>
+              </Link>
             </Item>
           </Menu>
         </Sider>
         <Layout>
           <Content className={styles.content}>
-            <div>
-              Blank
-            </div>
+            <Switch>
+              <Route
+                exact={true}
+                path="/"
+                component={PageAbout}/>
+              <Route
+                path="/download"
+                component={PageDownload}/>
+              <Route
+                path="/upload"
+                component={PageUpload}/>
+            </Switch>
           </Content>
           <Footer className={styles.footer}>
             Made with ❤ by CloudFile Group
