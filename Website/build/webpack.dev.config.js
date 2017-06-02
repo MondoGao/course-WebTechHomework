@@ -3,6 +3,8 @@ const Webpack = require('webpack')
 const WebpackMerge = require('webpack-merge')
 const baseConfig = require('./webpack.base.config')
 
+const settings = require('../setting')
+
 module.exports = WebpackMerge(baseConfig, {
   entry: {
     index: [
@@ -48,6 +50,7 @@ module.exports = WebpackMerge(baseConfig, {
     port: 8080,
     host: '0.0.0.0',
     compress: true,
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: settings.proxy
   }
 })

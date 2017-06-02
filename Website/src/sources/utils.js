@@ -1,5 +1,3 @@
-import { normalize } from 'normalizr'
-
 /**
  * 检查 HTTP 错误
  * @param response

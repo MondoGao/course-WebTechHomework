@@ -29,7 +29,7 @@ namespace FileUpload.Controllers
         {
             public int id;
             public string fileName;
-            public DateTime uploadDate;
+            public string uploadDate;
             public string type;
             public string md5;
             public bool hasPreviewImage;
@@ -38,7 +38,7 @@ namespace FileUpload.Controllers
             {
                 id = file.ID;
                 fileName = file.FileName;
-                uploadDate = file.UploadDate;
+                uploadDate = file.UploadDate.ToString("G");
                 type = file.Type;
                 md5 = file.MD5;
                 hasPreviewImage = file.PreviewImage != null;
@@ -117,9 +117,9 @@ namespace FileUpload.Controllers
                         case "application/vnd.ms-powerpoint":
                             extension = ".ppt";
                             break;
-                        case "application/pdf":
-                            extension = ".pdf";
-                            break;
+                        //case "application/pdf":
+                        //    extension = ".pdf";
+                        //    break;
                     }
 
                     if (extension != "")

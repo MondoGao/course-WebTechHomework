@@ -4,12 +4,12 @@ const { Header, Content, Footer, Sider } = Layout
 const { Item } = Menu
 import {
   Route,
-  Redirect,
   Link,
   Switch
 } from 'react-router-dom';
 
 import styles from './App.scss';
+import { getFiles } from 'sources'
 
 import PageUpload from 'components/PageUpload'
 import PageDownload from 'components/PageDownload'
@@ -19,6 +19,15 @@ class App extends React.Component {
   state = {
     collapsed: false,
     mode: 'inline',
+    fileData: []
+  }
+  
+  refreshData = () => {
+    return getFiles().then(data => {
+      this.setState({
+        fileData: data
+      })
+    })
   }
   
   handleCollapse = collapsed => {
@@ -30,6 +39,9 @@ class App extends React.Component {
   }
   
   render() {
+    let tabName = location.pathname.replace(/^\//, '')
+    tabName = tabName ? tabName : 'about'
+    
     return (
       <Layout
         className={styles.app}>
@@ -45,7 +57,7 @@ class App extends React.Component {
           <Menu
             theme="dark"
             mode={this.state.mode}
-            defaultSelectedKeys={['upload']}
+            selectedKeys={[tabName]}
             className={styles.menu}>
             <Item key="upload">
               <Link to="/upload">
@@ -59,7 +71,7 @@ class App extends React.Component {
                 {this.state.collapsed ? null :<span className="nav-text">下载文件</span>}
               </Link>
             </Item>
-            <Item>
+            <Item key="about">
               <Link to="/">
                 <Icon type="smile" />
                 {this.state.collapsed ? null :<span className="nav-text">关于我们</span>}
@@ -76,7 +88,9 @@ class App extends React.Component {
                 component={PageAbout}/>
               <Route
                 path="/download"
-                component={PageDownload}/>
+                render={props => (
+                  <PageDownload {...props} refreshData={this.refreshData} fileData={this.state.fileData}/>
+                )}/>
               <Route
                 path="/upload"
                 component={PageUpload}/>
