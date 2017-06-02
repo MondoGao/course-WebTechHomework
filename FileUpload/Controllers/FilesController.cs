@@ -117,21 +117,23 @@ namespace FileUpload.Controllers
                         case "application/vnd.ms-powerpoint":
                             extension = ".ppt";
                             break;
-                        //case "application/pdf":
-                        //    extension = ".pdf";
-                        //    break;
+                        case "application/pdf":
+                            extension = ".pdf";
+                            break;
                     }
 
                     if (extension != "")
                     {
                         var resultImage = CovertFile.Covert(rootPath, file.MD5, extension, stream);
-
-                        using (var previewStream = new System.IO.FileStream(resultImage, System.IO.FileMode.Open))
+                        if (System.IO.File.Exists(resultImage))
                         {
-                            await stream.FlushAsync();
-                            stream.Position = 0;
-                            await previewStream.CopyToAsync(stream);
-                            file.PreviewImage = stream.ToArray();
+                            using (var previewStream = new System.IO.FileStream(resultImage, System.IO.FileMode.Open))
+                            {
+                                await stream.FlushAsync();
+                                stream.Position = 0;
+                                await previewStream.CopyToAsync(stream);
+                                file.PreviewImage = stream.ToArray();
+                            }
                         }
                     }
                 }
@@ -247,7 +249,7 @@ namespace FileUpload.Controllers
             _context.File.Remove(file);
             await _context.SaveChangesAsync();
 
-            return Ok(file);
+            return Ok(new FileReturnInfo(file));
         }
 
         private bool FileExists(int id)
