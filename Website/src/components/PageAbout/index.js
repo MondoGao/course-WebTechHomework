@@ -55,6 +55,7 @@ const Peer = ({ data }) => {
   const colSetting = {
     xs: 12,
     md: 8,
+    lg: 6,
     xl: 6,
     style: {
       padding: '20px'

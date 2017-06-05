@@ -51,5 +51,8 @@ a, a:link, a:focus, a:visited {
 
 
 .footer {
+  position: relative;
   text-align: center;
+  box-shadow: 0 -5px 50px -4px rgba(#000, .08);
+  z-index: 3;
 }
