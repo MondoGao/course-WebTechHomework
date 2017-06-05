@@ -25,7 +25,7 @@ namespace FileUpload.Controllers
         private readonly FileUploadContext _context;
         private readonly IHostingEnvironment _env;
 
-        private class FileReturnInfo
+        public class FileReturnInfo
         {
             public int id;
             public string fileName;

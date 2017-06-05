@@ -19,14 +19,26 @@ namespace FileUpload.Controllers
         {
             public int id;
             public string generateTime;
-            public ICollection<File> files;
+            public ICollection<FilesController.FileReturnInfo> files;
 
             public OrderReturnInfo(Order order)
             {
                 id = order.ID;
                 generateTime = order.GenerateTime.ToString("G");
-                files = order.Files;
+
+                List<FilesController.FileReturnInfo> emitedList = new List<FilesController.FileReturnInfo> { };
+                foreach (var file in order.Files.ToList())
+                {
+                    emitedList.Add(new FilesController.FileReturnInfo(file));
+                }
+
+                files = emitedList;
             }
+        }
+
+        public class OrderPostInfo
+        {
+            public int[] files;
         }
 
         public OrdersController(FileUploadContext context)
@@ -35,10 +47,12 @@ namespace FileUpload.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFile()
+        public IActionResult GetOrder()
         {
+            var orders = _context.Order.Include(o => o.Files);
+
             List<OrderReturnInfo> emitedList = new List<OrderReturnInfo>();
-            foreach (var order in _context.Order.ToList())
+            foreach (var order in orders)
             {
                 emitedList.Add(new OrderReturnInfo(order));
             }
@@ -50,12 +64,9 @@ namespace FileUpload.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrder([FromRoute] int id, [FromQuery] string password)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var order = await _context.Order.SingleOrDefaultAsync(m => m.ID == id);
+            var orders = _context.Order.Include(o => o.Files);
+            var order = await orders.SingleOrDefaultAsync(m => m.ID == id);
+            
 
             if (order == null)
             {
@@ -66,22 +77,18 @@ namespace FileUpload.Controllers
                 return Forbid();
             }
 
-            return Ok(order);
+            return Ok(new OrderReturnInfo(order));
         }
 
         // POST: api/Orders
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] int[] files)
+        public async Task<IActionResult> PostOrder([FromBody]OrderPostInfo orderInfo)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             DateTime generateTime = DateTime.Now;
             string password = Guid.NewGuid().ToString().Split('-')[1];
             List<File> filesList = new List<File>();
 
-            foreach (var fileId in files)
+            foreach (var fileId in orderInfo.files)
             {
                 var file = await _context.File.SingleOrDefaultAsync(m => m.ID == fileId);
                 if (file != null)
@@ -99,7 +106,7 @@ namespace FileUpload.Controllers
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.ID }, order);
+            return Ok(new OrderReturnInfo(order));
         }
 
         // DELETE: api/Orders/5
