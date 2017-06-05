@@ -16,3 +16,18 @@ export const deleteFile = id => {
     .then(checkStatus)
     .then(data => data.json())
 }
+
+export const postOrder = fileIds => {
+  return fetch(`/api/orders`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      files: fileIds
+    })
+  })
+    .then(checkStatus)
+    .then(data => data.json())
+}

@@ -19,12 +19,17 @@ namespace FileUpload.Controllers
         {
             public int id;
             public string generateTime;
+            public string password;
             public ICollection<FilesController.FileReturnInfo> files;
 
-            public OrderReturnInfo(Order order)
+            public OrderReturnInfo(Order order, bool isShowPassword = false)
             {
                 id = order.ID;
                 generateTime = order.GenerateTime.ToString("G");
+                if (isShowPassword)
+                {
+                    password = order.Password;
+                }
 
                 List<FilesController.FileReturnInfo> emitedList = new List<FilesController.FileReturnInfo> { };
                 foreach (var file in order.Files.ToList())
@@ -106,7 +111,7 @@ namespace FileUpload.Controllers
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
-            return Ok(new OrderReturnInfo(order));
+            return Ok(new OrderReturnInfo(order, true));
         }
 
         // DELETE: api/Orders/5

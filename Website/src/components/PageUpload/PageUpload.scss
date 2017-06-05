@@ -11,3 +11,23 @@
 .upload-hint {
   color: #aaa;
 }
+
+.btn-wrapper {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.upload-spin-container {
+  left: 0;
+}
+
+.model-text {
+  span {
+    font-weight: bold;
+  }
+  input {
+    display: block;
+    opacity: 0;
+    height: 0;
+  }
+}
