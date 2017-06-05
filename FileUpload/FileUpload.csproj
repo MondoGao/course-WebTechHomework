@@ -36,7 +36,6 @@
     <Folder Include="Controllers\" />
     <Folder Include="Migrations\" />
     <Folder Include="Migrations\" />
-    <Folder Include="TempFiles\" />
   </ItemGroup>
 
 </Project>
