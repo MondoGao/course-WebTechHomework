@@ -19,15 +19,6 @@ class App extends React.Component {
   state = {
     collapsed: false,
     mode: 'inline',
-    fileData: []
-  }
-  
-  refreshData = () => {
-    return getFiles().then(data => {
-      this.setState({
-        fileData: data
-      })
-    })
   }
   
   handleCollapse = collapsed => {
@@ -89,7 +80,7 @@ class App extends React.Component {
               <Route
                 path="/download"
                 render={props => (
-                  <PageDownload {...props} refreshData={this.refreshData} fileData={this.state.fileData}/>
+                  <PageDownload {...props}/>
                 )}/>
               <Route
                 path="/upload"

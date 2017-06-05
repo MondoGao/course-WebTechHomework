@@ -17,6 +17,14 @@ export const deleteFile = id => {
     .then(data => data.json())
 }
 
+export const getOrder = (id, password) => {
+  return fetch(`/api/orders/${id}?password=${password}`, {
+    credentials: 'same-origin'
+  })
+    .then(checkStatus)
+    .then(data => data.json())
+}
+
 export const postOrder = fileIds => {
   return fetch(`/api/orders`, {
     method: 'POST',

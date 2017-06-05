@@ -1,24 +1,9 @@
-.table {
-
+.input-container {
+  margin: 0 auto 20px;
+  width: 30%;
+  min-width: 200px;
 }
 
-.tag:first-of-type {
-  margin-left: 8px;
-}
-
-.modal {
-  :global(.ant-modal-body) {
-    padding: 0;
-    border-radius: 4px;
-  }
-}
-
-.preview-wrapper {
-  position: relative;
-  img {
-    width: 100%;
-    border-radius: 4px;
-    vertical-align: top;
-    transition: all .3s;
-  }
+.btn-container {
+  text-align: center;
 }
