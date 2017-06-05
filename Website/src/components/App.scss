@@ -42,14 +42,13 @@ a, a:link, a:focus, a:visited {
   }
 }
 
-.content {
-  > * {
-    margin: 16px;
-    padding: 16px;
-    background: white;
-    border-radius: 5px;
-  }
+:global(.section) {
+  margin: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 5px;
 }
+
 
 .footer {
   text-align: center;

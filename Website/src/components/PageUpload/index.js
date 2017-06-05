@@ -109,7 +109,7 @@ class PageUpload extends React.Component {
     ) : null
     
     return (
-      <div>
+      <div className="section">
         <Dragger
           name='uploadFile'
           multiple={true}

@@ -86,7 +86,7 @@ class PageUpload extends React.Component {
         }} />
         
         <Route render={props => (
-          <div>
+          <div className="section">
             <p className={styles['input-container']}>
               <Input size="large" addonBefore="编号" value={this.state.idValue} onChange={this.handleIdChange}/>
             </p>
