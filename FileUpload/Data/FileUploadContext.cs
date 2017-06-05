@@ -14,5 +14,6 @@ namespace FileUpload.Models
         }
 
         public DbSet<FileUpload.Models.File> File { get; set; }
+        public DbSet<FileUpload.Models.Order> Order { get; set; }
     }
 }

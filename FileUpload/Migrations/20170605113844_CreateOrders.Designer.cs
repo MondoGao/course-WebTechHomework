@@ -8,9 +8,10 @@ using FileUpload.Models;
 namespace FileUpload.Migrations
 {
     [DbContext(typeof(FileUploadContext))]
-    partial class FileUploadContextModelSnapshot : ModelSnapshot
+    [Migration("20170605113844_CreateOrders")]
+    partial class CreateOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
