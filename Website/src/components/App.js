@@ -30,7 +30,7 @@ class App extends React.Component {
   }
   
   render() {
-    let tabName = location.pathname.replace(/^\//, '')
+    let tabName = location.pathname.replace(/^\//, '').replace(/(\w+)\/.*/, '$1')
     tabName = tabName ? tabName : 'about'
     
     return (

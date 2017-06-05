@@ -11,7 +11,8 @@ class PageUpload extends React.Component {
   state = {
     idValue: '',
     pwValue: '',
-    orderData: null
+    orderData: null,
+    isLoading: false
   }
   
   handleIdChange = e => {
@@ -40,6 +41,10 @@ class PageUpload extends React.Component {
   }
   
   refreshOrder = (replace = true) => {
+    this.setState({
+      isLoading: true
+    })
+    
     return getOrder(this.state.idValue, this.state.pwValue)
       .then(data => {
         this.setState({
@@ -48,9 +53,20 @@ class PageUpload extends React.Component {
         this.props.history[replace ? 'replace' : 'push'](`/download/${this.state.orderData.id}`)
       })
       .catch(err => {
+        this.setState({
+          isLoading: false
+        })
         console.log(err)
         message.error('编号或密码输入错误，请重新输入')
       })
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.match.isExact && !this.props.isExact) {
+      this.setState({
+        isLoading: false
+      })
+    }
   }
   
   render() {
@@ -82,6 +98,7 @@ class PageUpload extends React.Component {
                 onClick={() => this.refreshOrder(false)}
                 size="large"
                 type="primary"
+                loading={this.state.isLoading}
                 disabled={!(this.state.idValue.toString().length > 0 && this.state.pwValue.length > 3)}>
                 获取文件
               </Button>

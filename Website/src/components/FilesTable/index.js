@@ -73,7 +73,8 @@ class FilesTable extends React.Component {
           dataSource={this.props.fileData}
           loading={this.state.isLoading}
           className={styles.table}
-          pagination={false}>
+          pagination={false}
+          rowKey="id">
           <Column
             title="编号"
             dataIndex="id"
