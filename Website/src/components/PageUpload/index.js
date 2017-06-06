@@ -8,8 +8,11 @@ import { postOrder } from 'sources'
 const previewFileType = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/msword',
-  'application/vnd.ms-powerpoint'
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/msword',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.ms-excel',
+  'application/pdf'
 ]
 
 class PageUpload extends React.Component {

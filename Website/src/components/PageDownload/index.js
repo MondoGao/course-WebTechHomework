@@ -41,24 +41,28 @@ class PageUpload extends React.Component {
   }
   
   refreshOrder = (replace = true) => {
-    this.setState({
-      isLoading: true
-    })
-    
-    return getOrder(this.state.idValue, this.state.pwValue)
-      .then(data => {
-        this.setState({
-          orderData: data
-        })
-        this.props.history[replace ? 'replace' : 'push'](`/download/${this.state.orderData.id}`)
+    if (this.state.idValue.toString().length > 0 && this.state.pwValue.length > 3) {
+      this.setState({
+        isLoading: true
       })
-      .catch(err => {
-        this.setState({
-          isLoading: false
+  
+      return getOrder(this.state.idValue, this.state.pwValue)
+        .then(data => {
+          this.setState({
+            orderData: data
+          })
+          this.props.history[replace ? 'replace' : 'push'](`/download/${this.state.orderData.id}`)
         })
-        console.log(err)
-        message.error('编号或密码输入错误，请重新输入')
-      })
+        .catch(err => {
+          this.setState({
+            isLoading: false
+          })
+          console.log(err)
+          message.error('编号或密码输入错误，请重新输入')
+        })
+    } else {
+      message.warn('编号或密码没有输完，请检查后再输入哦')
+    }
   }
   
   componentWillReceiveProps(nextProps) {
@@ -88,10 +92,10 @@ class PageUpload extends React.Component {
         <Route render={props => (
           <div className="section">
             <p className={styles['input-container']}>
-              <Input size="large" addonBefore="编号" value={this.state.idValue} onChange={this.handleIdChange}/>
+              <Input size="large" addonBefore="编号" value={this.state.idValue} onChange={this.handleIdChange} onPressEnter={this.refreshOrder(false)}/>
             </p>
             <p className={styles['input-container']}>
-              <Input size="large" addonBefore="密码" value={this.state.pwValue} onChange={this.handlePwChange}/>
+              <Input size="large" addonBefore="密码" value={this.state.pwValue} onChange={this.handlePwChange} onPressEnter={this.refreshOrder(false)}/>
             </p>
             <p className={styles['btn-container']}>
               <Button
