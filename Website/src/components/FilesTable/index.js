@@ -68,7 +68,7 @@ class FilesTable extends React.Component {
   
   render() {
     return (
-      <div>
+      <div className="section">
         <Table
           dataSource={this.props.fileData}
           loading={this.state.isLoading}
