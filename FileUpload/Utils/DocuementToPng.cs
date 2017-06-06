@@ -33,6 +33,8 @@ namespace FileUpload
 
             p.WaitForExit();
 
+            File.Delete(tmpFileName);
+
             return resultFileName;
         }
     }

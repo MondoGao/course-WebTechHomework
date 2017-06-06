@@ -135,6 +135,8 @@ namespace FileUpload.Controllers
                                 file.PreviewImage = stream.ToArray();
                             }
                         }
+
+                        System.IO.File.Delete(resultImage);
                     }
                 }
 
