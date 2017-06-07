@@ -144,10 +144,10 @@ namespace FileUpload.Controllers
                                 await previewStream.CopyToAsync(stream);
                                 file.PreviewImage = stream.ToArray();
                             }
-                        }
 
-                        // 删除临时生成的图片
-                        System.IO.File.Delete(resultImage);
+                            // 删除临时生成的图片
+                            System.IO.File.Delete(resultImage);
+                        }
                     }
                 }
 
