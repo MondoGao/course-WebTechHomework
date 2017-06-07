@@ -11,35 +11,35 @@ class PageUpload extends React.Component {
         name: '江高华',
         class: '信管 1501',
         avatar: require('assets/jgh.gif'),
-        incharge: '技术总监'
+        incharge: '技术总监 & 前端'
       },
       {
         uid: 'U201516083',
         name: '朱芝',
         class: '信管 1502',
         avatar: require('assets/zz.gif'),
-        incharge: '技术总监'
+        incharge: '后端助理'
       },
       {
         uid: 'U201516084',
         name: '杨司玥',
         class: '信管 1502',
         avatar: require('assets/ysy.gif'),
-        incharge: '技术总监'
+        incharge: '后端助理'
       },
       {
         uid: 'U201515974',
         name: '唐清清',
         class: '信管 1502',
         avatar: require('assets/tqq.gif'),
-        incharge: '技术总监'
+        incharge: '数据库设计助理'
       },
       {
         uid: 'U201516080',
         name: '张胜男',
         class: '信管 1502',
         avatar: require('assets/zsn.gif'),
-        incharge: '技术总监'
+        incharge: '文档编写助理'
       }
     ]
     
@@ -51,6 +51,12 @@ class PageUpload extends React.Component {
   }
 }
 
+/**
+ * 单个人员的信息组件
+ * @param data
+ * @return {XML}
+ * @constructor
+ */
 const Peer = ({ data }) => {
   const colSetting = {
     xs: 12,

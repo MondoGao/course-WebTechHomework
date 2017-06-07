@@ -9,7 +9,6 @@ import {
 } from 'react-router-dom';
 
 import styles from './App.scss';
-import { getFiles } from 'sources'
 
 import PageUpload from 'components/PageUpload'
 import PageDownload from 'components/PageDownload'

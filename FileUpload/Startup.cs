@@ -49,11 +49,13 @@ namespace FileUpload
                 app.UseBrowserLink();
             }
 
+            // 因前端使用单页应用架构，除 api 和静态资源外路由交由前端处理，此处 rewrite 保证使用
             var options = new RewriteOptions()
                .AddRewrite(@"^(?!(assets|scripts|styles|api)).*", "/", skipRemainingRules: true);
 
             app.UseRewriter(options);
 
+            // 伺服静态文件
             app.UseFileServer();
 
             app.UseMvc();

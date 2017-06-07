@@ -15,6 +15,7 @@ namespace FileUpload.Controllers
     {
         private readonly FileUploadContext _context;
 
+        // 返回值包装类，过滤不需返回的实体属性
         private class OrderReturnInfo
         {
             public int id;
@@ -41,6 +42,7 @@ namespace FileUpload.Controllers
             }
         }
 
+        // 为 POST 动作 Model Mapping 准备的类
         public class OrderPostInfo
         {
             public int[] files;
@@ -51,6 +53,8 @@ namespace FileUpload.Controllers
             _context = context;
         }
 
+        // 获取全部的订单
+        // GET: api/Orders
         [HttpGet]
         public IActionResult GetOrder()
         {
@@ -65,10 +69,12 @@ namespace FileUpload.Controllers
         }
 
 
+        // 根据 id 和密码获取对应的订单的文件列表及详情
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrder([FromRoute] int id, [FromQuery] string password)
         {
+            // 读入相关联的 File 的信息以便使用
             var orders = _context.Order.Include(o => o.Files);
             var order = await orders.SingleOrDefaultAsync(m => m.ID == id);
             
@@ -77,6 +83,7 @@ namespace FileUpload.Controllers
             {
                 return NotFound();
             }
+            // 验证密码
             else if (order.Password != password)
             {
                 return Forbid();
@@ -90,13 +97,15 @@ namespace FileUpload.Controllers
         public async Task<IActionResult> PostOrder([FromBody]OrderPostInfo orderInfo)
         {
             DateTime generateTime = DateTime.Now;
+            // 生成 GUID 并取前四位作为密码
             string password = Guid.NewGuid().ToString().Split('-')[1];
             List<File> filesList = new List<File>();
 
+            // 判断传来的 fileId 是否存在，存在则建立与 order 实体的所属关系
             foreach (var fileId in orderInfo.files)
             {
                 var file = await _context.File.SingleOrDefaultAsync(m => m.ID == fileId);
-                if (file != null)
+                if (file != null && file.Order == null)
                 {
                     filesList.Add(file);
                 }
@@ -108,12 +117,14 @@ namespace FileUpload.Controllers
 
             Order order = new Order { GenerateTime = generateTime, Password = password, Files = filesList };
 
+            // 与数据库同步
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 
             return Ok(new OrderReturnInfo(order, true));
         }
 
+        // 找到对应 id 的 Order 并删除
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder([FromRoute] int id)

@@ -5,6 +5,10 @@ const Dragger = Upload.Dragger
 import styles from './PageUpload.scss'
 import { postOrder } from 'sources'
 
+/**
+ * 要生成预览的 Mime Type
+ * @type {[string]}
+ */
 const previewFileType = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
@@ -22,6 +26,10 @@ class PageUpload extends React.Component {
     isGeneratingOrder: false
   }
   
+  /**
+   * 控制文件列表变化
+   * @param fileInfo
+   */
   handleChange = fileInfo => {
     const file = fileInfo.file
     const fileList = fileInfo.fileList
@@ -43,10 +51,18 @@ class PageUpload extends React.Component {
     })
   }
   
+  /**
+   * 获取上传成功的文件列表
+   * @return {Array}
+   */
   getSuccessFileList = () => {
     return this.state.fileList.filter(file => file.status === 'done')
   }
   
+  /**
+   * 处理订单生成按钮单击
+   * @param e
+   */
   handleSubmitClick = e => {
     this.setState({
       isGeneratingOrder: true
@@ -62,6 +78,9 @@ class PageUpload extends React.Component {
       })
   }
   
+  /**
+   * 处理模态框关闭事件
+   */
   handleModelClose = () => {
     this.setState({
       fileList: [],
@@ -69,6 +88,9 @@ class PageUpload extends React.Component {
     })
   }
   
+  /**
+   * 处理模态框复制信息按钮单击
+   */
   handleModelCopy = () => {
     this.modelTip.select()
     document.execCommand('copy')
@@ -78,7 +100,11 @@ class PageUpload extends React.Component {
   render() {
     const fileNum = this.getSuccessFileList().length
     const hasFile = fileNum > 0
-    
+  
+    /**
+     * 判断加载状态决定是否需要显示加载
+     * @type {XML}
+     */
     let uploadTip = (
       <div>
         <p className='ant-upload-drag-icon'>
@@ -99,7 +125,10 @@ class PageUpload extends React.Component {
         </Spin>
       )
     }
-    
+  
+    /**
+     * 当获取到 Order 信息时才进行渲染
+     */
     const modelEles = this.state.orderInfo ? (
       <div className={styles['model-text']}>
         <p>您的订单编号为：<span>{this.state.orderInfo.id}</span></p>

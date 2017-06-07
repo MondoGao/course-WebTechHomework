@@ -15,6 +15,10 @@ class FilesTable extends React.Component {
     previewImgSrc: ''
   }
   
+  /**
+   * 处理删除按钮单击
+   * @param record
+   */
   handleDeleteClick = record => () => {
     this.setState({
       isLoading: true
@@ -29,6 +33,10 @@ class FilesTable extends React.Component {
       })
   }
   
+  /**
+   * 处理预览按钮单击
+   * @param record
+   */
   handlePreviewClick = record => () => {
     this.setState({
       previewImgSrc: `/api/files/${record.id}/${record.type.match(/^image\//) ? 'download' : 'preview'}`,
@@ -54,6 +62,9 @@ class FilesTable extends React.Component {
     })
   }
   
+  /**
+   * 刷新 Order 信息
+   */
   refreshData = () => {
     this.props.refreshData().then(data => {
       this.setState({

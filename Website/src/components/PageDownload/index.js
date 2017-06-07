@@ -15,6 +15,10 @@ class PageUpload extends React.Component {
     isLoading: false
   }
   
+  /**
+   * 处理 id input 值变化
+   * @param e
+   */
   handleIdChange = e => {
     let value = e.target.value.replace(/[^0-9]/g, '').slice(0, 15)
     if (e.target.value !== value) {
@@ -26,6 +30,10 @@ class PageUpload extends React.Component {
     })
   }
   
+  /**
+   * 处理 password input 值变化
+   * @param e
+   */
   handlePwChange = e => {
     let value = e.target.value.replace(/\s+/g, '').slice(0, 4)
     if (e.target.value.length > 4) {
@@ -40,6 +48,11 @@ class PageUpload extends React.Component {
     })
   }
   
+  /**
+   * 刷新订单信息
+   * @param replace
+   * @return {Promise}
+   */
   refreshOrder = (replace = true) => {
     this.setState({
       isLoading: true
@@ -61,6 +74,10 @@ class PageUpload extends React.Component {
       })
   }
   
+  /**
+   * 处理回车键按下
+   * @param e
+   */
   handleEnterPress = e => {
     if (this.state.idValue.toString().length > 0 && this.state.pwValue.length > 3) {
       this.refreshOrder(false)
@@ -87,7 +104,10 @@ class PageUpload extends React.Component {
               <FilesTable {...props} fileData={this.state.orderData.files} refreshData={this.refreshOrder}/>
             )
           }
-          
+  
+          /**
+           * 若无订单信息则直接跳转
+           */
           return (
             <Redirect push to="/download"/>
           )

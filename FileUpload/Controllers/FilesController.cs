@@ -25,6 +25,7 @@ namespace FileUpload.Controllers
         private readonly FileUploadContext _context;
         private readonly IHostingEnvironment _env;
 
+        // 对文件实体进行包装的类，过滤不需要返回的属性
         public class FileReturnInfo
         {
             public int id;
@@ -55,6 +56,7 @@ namespace FileUpload.Controllers
         [HttpGet]
         public IActionResult GetFile()
         {
+            // 过滤不需要返回的属性
             List<FileReturnInfo> emitedList = new List<FileReturnInfo> { };
             foreach (var file in _context.File.ToList())
             {
@@ -75,12 +77,14 @@ namespace FileUpload.Controllers
                 return NoContent();
             }
 
+            // 根据现有信息创建文件实体
             var file = new File { FileName = uploadFile.FileName, Type = uploadFile.ContentType, UploadDate = nowStamp };
 
             if (uploadFile.Length > 0)
             {
                 using (var stream = new System.IO.MemoryStream())
                 {
+                    // 读取上传文件计算 MD5
                     await uploadFile.CopyToAsync(stream);
                     stream.Position = 0;
                     var md5Arr = MD5.Create().ComputeHash(stream);
@@ -89,14 +93,18 @@ namespace FileUpload.Controllers
                     
                     for (int i = 0; i < md5Arr.Length; i++)
                     {
+                        // x2 代表转为 16 进制长度为 2 的 string
                         sBuilder.Append(md5Arr[i].ToString("x2"));
                     }
                     
                     file.MD5 = sBuilder.ToString();
+
+                    // 将文件内容转为字节数组并写入实体
                     file.FileContent = stream.ToArray();
 
                     var extension = "";
 
+                    // 处理特定的文档预览
                     switch (file.Type)
                     {
                         case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
@@ -124,7 +132,9 @@ namespace FileUpload.Controllers
 
                     if (extension != "")
                     {
+                        // 进行预览图片的生成并写入到实体中
                         var resultImage = CovertFile.Covert(rootPath, file.MD5, extension, stream);
+
                         if (System.IO.File.Exists(resultImage))
                         {
                             using (var previewStream = new System.IO.FileStream(resultImage, System.IO.FileMode.Open))
@@ -136,10 +146,12 @@ namespace FileUpload.Controllers
                             }
                         }
 
+                        // 删除临时生成的图片
                         System.IO.File.Delete(resultImage);
                     }
                 }
 
+                // 将生成的实体添加到 Model 中并与数据库同步
                 await _context.File.AddAsync(file);
                 _context.SaveChanges();
 
@@ -160,6 +172,7 @@ namespace FileUpload.Controllers
                 return BadRequest(ModelState);
             }
 
+            // 查找对应 id 的文件
             var file = await _context.File.SingleOrDefaultAsync(m => m.ID == id);
 
             if (file == null)
@@ -170,6 +183,7 @@ namespace FileUpload.Controllers
             return Ok(new FileReturnInfo(file));
         }
 
+        // 查找对应 id 的文件并返回文件的内容
         // GET: api/Files/5/Download
         [HttpGet("{id}/Download")]
         public async Task<IActionResult> Download([FromRoute] int id)
@@ -184,6 +198,7 @@ namespace FileUpload.Controllers
             return File(file.FileContent, file.Type, file.FileName);
         }
 
+        // 查找对应 id 的文件并返回文件的预览图片
         // GET: api/Files/5/Preview
         [HttpGet("{id}/Preview")]
         public async Task<IActionResult> Preview([FromRoute] int id)
@@ -198,41 +213,7 @@ namespace FileUpload.Controllers
             return File(file.PreviewImage, "image/png", $"{file.MD5}.png");
         }
 
-        // PUT: api/Files/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFile([FromRoute] int id, [FromBody] File file)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != file.ID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(file).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FileExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
+        // 删除对应 id 的文件
         // DELETE: api/Files/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFile([FromRoute] int id)
